@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<robot name="food_feeder">
+
+  <!-- Base link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="3 3 0.05" />
+      </geometry>
+      <origin xyz="0 0 0.0" rpy="0 0 0" />
+      <mesh filename="./CAD/Base.stl" scale="0.1 0.1 0.1"/>
+    </visual>
+  </link>
+
+
+  <!-- Rotating Plate (Cylinder) -->
+  <link name="plate">
+    <visual>
+      <geometry>
+        <mesh filename="./CAD/Food_Holder.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.2" length="0.05" />
+      </geometry>
+      <origin xyz="0 0 0.025" rpy="0 0 0" />
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 0.025" rpy="0 0 0" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </link>
+
+  <!-- Plate Joint -->
+  <joint name="plate_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="plate" />
+    <origin xyz="0 0 0.05" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <!-- Robotic Arm Base -->
+  <link name="arm_base">
+    <visual>
+      <geometry>
+        <mesh filename="./CAD/Arm_Base.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 1.57" />
+
+      <material name="orange">
+        <color rgba="255 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.1 0.1 0.1" />
+      </geometry>
+      <origin xyz="0.3 0 0.05" rpy="0 0 0" />
+    </collision>
+    <inertial>
+      <mass value="2.0" />
+      <origin xyz="0.5 0 0.05" rpy="0 0 0" />
+      <inertia ixx="0.02" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link>
+
+  <!-- Arm Joint -->
+  <joint name="arm_base_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="arm_base" />
+    <origin xyz="0.5 0.1 0.05" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.57" upper="1.57" effort="5.0" velocity="1.0" />
+  </joint>
+
+  <!-- Arm Segment 1 -->
+  <link name="arm_link1">
+    <visual>
+      <geometry>
+        <mesh filename="./CAD/Lower_Arm.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+        <origin xyz="0 0.05 0.2" rpy="1.57 1.57 0" />
+      <material name="orange">
+        <color rgba="255 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.3" />
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+    <inertial>
+      <mass value="0.5" />
+      <origin xyz="0 0 0.15" rpy="0 0 0" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </link>
+
+  <!-- Joint for Arm Segment 1 -->
+  <joint name="arm_joint1" type="revolute">
+    <parent link="arm_base" />
+    <child link="arm_link1" />
+    <origin xyz="0 0 0.3" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.57" upper="1.57" effort="5.0" velocity="1.0" />
+  </joint>
+
+    <link name="arm_link2">
+        <visual>
+        <geometry>
+            <mesh filename="./CAD/Upper_Arm.stl" scale="0.01 0.01 0.01"/>
+        </geometry>
+        <origin xyz="0 0.05 0.23" rpy="1.57 1.57 0" />
+        <material name="orange">
+            <color rgba="255 1 0 1" />
+        </material>
+        </visual>
+        <collision>
+        <geometry>
+            <cylinder radius="0.05" length="0.3" />
+        </geometry>
+        <origin xyz="0 0 0.15" rpy="0 0 0" />
+        </collision>
+        <inertial>
+        <mass value="0.5" />
+        <origin xyz="0 0 0.15" rpy="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+        </inertial>
+  </link>
+
+  <!-- Joint for Arm Segment 2 -->
+  <joint name="arm_joint2" type="revolute">
+    <parent link="arm_link1" />
+    <child link="arm_link2" />
+    <origin xyz="0 -0.1 0.45" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <limit lower="-3.14" upper="3.14" effort="5.0" velocity="1.0" />
+  </joint>
+
+  <!-- Arm End Effector -->
+  <link name="end_effector">
+    <visual>
+      <geometry>
+        <mesh filename="./CAD/End_Effector.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <origin xyz="0 0 0.2" rpy="0 0 0" />
+      <material name="orange">
+        <color rgba="255 1 0 1" />
+        </material>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.05" />
+      </geometry>
+      <origin xyz="0 0 0.3" rpy="0 0 0" />
+    </collision>
+    <inertial>
+      <mass value="0.2" />
+      <origin xyz="0 0 0.3" rpy="0 0 0" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </link>
+
+    <!-- Joint for End Effector -->
+    <joint name="end_effector_joint" type="fixed">
+        <parent link="arm_link2" />
+        <child link="end_effector" />
+        <origin xyz="0 0 0.3" rpy="0 0 0" />
+    </joint>
+
+</robot>
